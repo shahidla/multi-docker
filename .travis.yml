@@ -16,7 +16,7 @@ after_success:
   - docker build -t shahidla/multi-worker ./worker
 
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
- 
+# PUSH TO HUB
 - docker push shahidla/client
 - docker push shahidla/nginx
 - docker push shahidla/server
