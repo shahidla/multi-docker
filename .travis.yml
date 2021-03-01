@@ -1,5 +1,6 @@
-language: generic 
 sudo: required
+language: generic
+
 services:
   - docker
 
@@ -7,17 +8,17 @@ before_install:
   - docker build -t shahidla/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true shahidla/react-test npm test -- --coverage
+  - docker run -e CI=true shahidla/react-test npm test
 
 after_success:
   - docker build -t shahidla/multi-client ./client
   - docker build -t shahidla/multi-nginx ./nginx
   - docker build -t shahidla/multi-server ./server
   - docker build -t shahidla/multi-worker ./worker
-
-- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-# PUSH TO HUB
-- docker push shahidla/client
-- docker push shahidla/nginx
-- docker push shahidla/server
-- docker push shahidla/worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push shahidla/multi-client
+  - docker push shahidla/multi-nginx
+  - docker push shahidla/multi-server
+  - docker push shahidla/multi-worker
