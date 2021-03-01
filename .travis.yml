@@ -1,0 +1,23 @@
+language: generic 
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t shahidla/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true shahidla/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t shahidla/multi-client ./client
+  - docker build -t shahidla/multi-nginx ./nginx
+  - docker build -t shahidla/multi-server ./server
+  - docker build -t shahidla/multi-worker ./worker
+
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+- docker push shahidla/client
+- docker push shahidla/nginx
+- docker push shahidla/server
+- docker push shahidla/worker
